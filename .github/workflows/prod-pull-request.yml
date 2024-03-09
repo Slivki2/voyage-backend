@@ -1,0 +1,44 @@
+name: Prod pull request
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - feature/*
+      - bugfix/*
+jobs:
+  auto-pull-request:
+    name: Auto pull request to master
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate branch name
+        uses: actions/github-script@v3
+        id: generate-branch-name
+        with:
+          script: |
+                return `Production release - commit: ${context.payload.head_commit.id}`;
+          result-encoding: string
+
+      - name: Set branch name
+        run: echo "PULL_REQUEST_TITLE=${{steps.generate-branch-name.outputs.result}}" >> $GITHUB_ENV
+
+      - name: Generate PR body
+        uses: actions/github-script@v3
+        id: generate-pr-body
+        with:
+          script: |
+              return `Pull request to release latest staging to master pushed by @${
+                context.payload.head_commit.author.username
+              }. Commit Message: ${context.payload.head_commit.id}`;
+          result-encoding: string
+
+      - name: Set PR body
+        run: echo "PULL_REQUEST_BODY=${{steps.generate-pr-body.outputs.result}}" >> $GITHUB_ENV
+      
+      - name: pull-request-action
+        uses: vsoch/pull-request-action@1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_BRANCH: "main"
+          PULL_REQUEST_FROM_BRANCH: "staging"
+          PULL_REQUEST_UPDATE: true
