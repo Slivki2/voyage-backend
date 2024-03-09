@@ -15,9 +15,73 @@ datasource db {
 
 model Guide {
   id   String @id @default(uuid())
-  name String
+  name String @unique
   text String
 
+  primaryImages Images[] @relation(name: "GuidePrimaryImages")
+  contentImages Images[] @relation(name: "GuideContentImages")
+
+  countries Country[]
+  cities    City[]
+
+  // tags String[]
+
+  // visitedDate DateTime
+
+  // authorId String
+  // author User @relation(fields: [authorId], references: [id])
+
+  deleted   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model City {
+  id          String @id @default(uuid())
+  name        String
+  description String
+
+  images Images[]
+
+  countryId String
+  country   Country @relation(fields: [countryId], references: [id])
+
+  guides Guide[]
+
+  deleted   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Country {
+  id          String @id @default(uuid())
+  name        String
+  description String
+
+  images Images[]
+
+  cities City[]
+
+  guides Guide[]
+
+  deleted   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Images {
+  id   String @id @default(uuid())
+  url  String
+  alt  String
+  type String
+
+  guidesByPrimaryImages Guide[] @relation(name: "GuidePrimaryImages")
+  guidesByContentImages Guide[] @relation(name: "GuideContentImages")
+
+  cities  City[]
+  country Country[]
+
+  deleted   Boolean  @default(false)
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }

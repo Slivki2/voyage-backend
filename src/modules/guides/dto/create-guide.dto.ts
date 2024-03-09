@@ -1,10 +1,4 @@
-import { ApiProperty, PickType } from "@nestjs/swagger"
-import { Guide } from "../entities/guide"
+import { OmitType } from "@nestjs/swagger"
+import { UpdateGuideDto } from "./update-guide.dto"
 
-export class CreateGuideDto extends PickType(Guide, ["name", "text"]) {
-  @ApiProperty()
-  name: string
-
-  @ApiProperty()
-  text: string
-}
+export class CreateGuideDto extends OmitType(UpdateGuideDto, ["id"] as const) {}

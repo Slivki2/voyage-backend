@@ -1,5 +1,12 @@
-import { PartialType } from "@nestjs/mapped-types"
 import { PickType } from "@nestjs/swagger"
-import { CreateGuideDto } from "./create-guide.dto"
+import { Guide } from "../entities/guide.entity"
 
-export class UpdateGuideDto extends PickType(CreateGuideDto, ["name", "text"] as const) {}
+export class UpdateGuideDto extends PickType(Guide, [
+  "id",
+  "name",
+  "text",
+  "primaryImages",
+  "contentImages",
+  "countries",
+  "cities",
+] as const) {}

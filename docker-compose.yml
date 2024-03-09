@@ -1,16 +1,22 @@
 version: '3.8'
 
+volumes:
+  voyage_volume:
+    name: voyage_volume
+
 services:
   postgres:
     image: postgres:alpine
     restart: always
+    env_file:
+      - .env
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 5s
       timeout: 5s
       retries: 10
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - voyage_volume:/var/lib/postgresql/data
     ports:
       - ${DB_PORT}:${DB_PORT}
 
@@ -20,6 +26,8 @@ services:
       dockerfile: Dockerfile
     container_name: voyage-server
     restart: always
+    env_file:
+      - .env
     ports:
       - ${APP_PORT}:${APP_PORT}
       - "5555:5555"

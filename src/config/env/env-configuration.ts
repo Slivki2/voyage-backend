@@ -12,10 +12,16 @@ export type EnvironmentConfig = {
     password: string
     url: string
   }
+  awsS3: {
+    accessKeyId: string
+    secretAccessKey: string
+    region: string
+    bucketName: string
+  }
 }
 
 export function getEnvironmentConfig(): EnvironmentConfig {
-  const config = {
+  const config: EnvironmentConfig = {
     app_port: parseInt(process.env.APP_PORT, 10) || DEFAULT_APP_PORT,
     db: {
       host: process.env.DB_HOST,
@@ -24,6 +30,12 @@ export function getEnvironmentConfig(): EnvironmentConfig {
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       url: process.env.DB_URL,
+    },
+    awsS3: {
+      accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+      region: process.env.AWS_S3_REGION,
+      bucketName: process.env.AWS_S3_BUCKET,
     },
   }
 

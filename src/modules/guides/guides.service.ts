@@ -10,7 +10,12 @@ export class GuidesService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createGuideDto: CreateGuideDto): Promise<GuideDto> {
-    const createdGuide = await this.prismaService.guide.create({ data: createGuideDto })
+    const createdGuide = await this.prismaService.guide.create({
+      data: {
+        name: createGuideDto.name,
+        text: createGuideDto.text,
+      },
+    })
 
     const createdGuideDto = plainToClass(GuideDto, createdGuide)
 
@@ -26,7 +31,14 @@ export class GuidesService {
   }
 
   async update(id: string, updateGuideDto: UpdateGuideDto) {
-    const updatedGuide = this.prismaService.guide.update({ data: updateGuideDto, where: { id } })
+    const updatedGuide = this.prismaService.guide.update({
+      data: {
+        id: id,
+        name: updateGuideDto.name,
+        text: updateGuideDto.text,
+      },
+      where: { id },
+    })
 
     const updatedGuideDto = plainToClass(GuideDto, updatedGuide)
 
