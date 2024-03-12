@@ -1,28 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { ImageUploadResult } from "../../aws-s3/types"
+import { FileDeleteResult } from "../../aws-s3/types"
 import { ApiResponse } from "../../common/types"
 
-export class UploadImagesResponse implements ApiResponse<ImageUploadResult[]> {
+export class DeleteImageResponse implements ApiResponse<FileDeleteResult[]> {
   @ApiProperty({
-    type: [ImageUploadResult],
-    description: "The uploaded images",
+    type: [FileDeleteResult],
+    description: "The deleted images",
     example: [
       {
         key: "image1.jpg",
         url: "https://example.com/image1.jpg",
+        deleted: true,
         error: null,
       },
     ],
     required: true,
   })
-  data: ImageUploadResult[]
+  data: FileDeleteResult[]
 
   @ApiProperty({
     type: [Error],
     description: "The errors",
     example: [
       {
-        message: "The file is too large",
+        message: "Invalid file URL",
       },
     ],
     required: false,

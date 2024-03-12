@@ -7,8 +7,15 @@ export type PutObjectCommandOutputExtended = PutObjectCommandOutput & {
   Location: string
 }
 
-export class ImageUploadResult {
+export class FileUploadResult {
   key: string | null
   url: string | null
+  error: Error | null
+}
+
+export class FileDeleteResult {
+  key: string | null
+  url: string | null
+  deleted: boolean
   error: Error | null
 }

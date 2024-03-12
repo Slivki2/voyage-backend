@@ -1,8 +1,10 @@
 import {
   Controller,
+  Delete,
   FileTypeValidator,
   Logger,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
   UploadedFiles,
@@ -14,9 +16,12 @@ import {
   ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiPayloadTooLargeResponse,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger"
@@ -26,8 +31,9 @@ import {
   MAX_FILE_SIZE,
   MAX_FILES_PER_REQUEST,
 } from "../common/constants"
+import { DeleteImageResponse } from "./dto/delete-image-response"
 import { UploadImagesDto } from "./dto/upload-images.dto"
-import { UploadImagesResponse } from "./dto/upload-images.response"
+import { UploadImagesResponse } from "./dto/upload-images-response"
 import { ImagesService } from "./images.service"
 
 @ApiTags("images")
@@ -55,9 +61,8 @@ export class ImagesController {
   @ApiPayloadTooLargeResponse({
     description: "The payload is too large.",
   })
-  @ApiResponse({
-    status: 500,
-    description: "Internal",
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error",
   })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
@@ -105,6 +110,34 @@ export class ImagesController {
 
     return {
       data: result,
+      errors: null,
+    }
+  }
+
+  @Delete(":url")
+  @ApiOperation({ summary: "Remove an image by url" })
+  @ApiParam({ name: "url", type: String })
+  @ApiOkResponse({
+    description: "The image has been successfully removed.",
+    type: DeleteImageResponse,
+  })
+  @ApiBadRequestResponse({
+    description: "Bad request",
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized",
+  })
+  @ApiInternalServerErrorResponse({
+    description: "Internal server error",
+  })
+  @ApiNotFoundResponse({
+    description: "Image not found",
+  })
+  async deleteImage(@Param("url") url: string): Promise<DeleteImageResponse> {
+    const results = await this.imagesService.delete([url])
+
+    return {
+      data: results,
       errors: null,
     }
   }

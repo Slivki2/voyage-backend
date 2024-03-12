@@ -7,8 +7,14 @@ export class ImagesService {
   constructor(private readonly awsS3Service: AwsS3Service) {}
 
   async upload(imagesDto: UploadImagesDto) {
-    const uploadedFiles = await this.awsS3Service.uploadFiles(imagesDto.files)
+    const uploadedFilesResult = await this.awsS3Service.uploadFiles(imagesDto.files)
 
-    return uploadedFiles
+    return uploadedFilesResult
+  }
+
+  async delete(urls: string[]) {
+    const deleteResult = await this.awsS3Service.deleteFiles(urls)
+
+    return deleteResult
   }
 }
