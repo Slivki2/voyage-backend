@@ -31,7 +31,7 @@ export class Guide {
   @ApiProperty({
     type: [String],
     description: "The primary images of the guide",
-    example: "https://example.com/image.jpg",
+    example: ["https://example.com/image.jpg"],
     required: true,
   })
   primaryImages: Image[]
@@ -39,7 +39,7 @@ export class Guide {
   @ApiProperty({
     type: [String],
     description: "The content images of the guide",
-    example: "https://example.com/image.jpg",
+    example: ["https://example.com/image.jpg"],
     required: false,
   })
   contentImages: Image[]
@@ -47,7 +47,7 @@ export class Guide {
   @ApiProperty({
     type: () => [Country],
     description: "The countries mentioned in the guide",
-    example: "France",
+    example: ["France"],
     required: true,
   })
   countries: Country[]
@@ -55,7 +55,7 @@ export class Guide {
   @ApiProperty({
     type: () => [City],
     description: "The cities mentioned in the guide",
-    example: "Paris",
+    example: ["Paris"],
     required: true,
   })
   cities: City[]

@@ -36,5 +36,5 @@ COPY --from=builder /app/prisma ./prisma/
 # Expose port
 EXPOSE 4000
 
-# Run the app
-CMD ["npm", "run", "start:prod"]
+# Run the app and apply migrations
+CMD ["npm", "run", "start:migrate:prod"]

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing"
+import { MockedLogger } from "../../test-utils/providers"
 import { PrismaModule } from "../prisma/prisma.module"
 import { GuidesController } from "./guides.controller"
 import { GuidesService } from "./guides.service"
@@ -10,7 +11,7 @@ describe("GuidesController", () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaModule],
       controllers: [GuidesController],
-      providers: [GuidesService],
+      providers: [GuidesService, MockedLogger],
     }).compile()
 
     controller = module.get<GuidesController>(GuidesController)

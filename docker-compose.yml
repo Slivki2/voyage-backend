@@ -6,6 +6,7 @@ volumes:
 
 services:
   postgres:
+    container_name: voyage-postgres
     image: postgres:alpine
     restart: always
     env_file:
