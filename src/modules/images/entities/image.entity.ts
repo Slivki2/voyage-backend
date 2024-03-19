@@ -1,4 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
+import { Exclude } from "class-transformer"
+import { IsBoolean, IsMimeType, IsOptional, IsString, IsUrl, IsUUID } from "class-validator"
 
 export class Image {
   @ApiProperty({
@@ -7,6 +9,7 @@ export class Image {
     example: "c7912662-26ea-435c-a1f7-66f52d1440ff",
     required: true,
   })
+  @IsUUID(4, { message: "Invalid UUID" })
   id: string
 
   @ApiProperty({
@@ -15,6 +18,8 @@ export class Image {
     example: "https://example.com/image.jpg",
     required: true,
   })
+  @IsString()
+  @IsUrl()
   url: string
 
   @ApiProperty({
@@ -23,6 +28,8 @@ export class Image {
     example: "A beautiful image",
     required: false,
   })
+  @IsString()
+  @IsOptional()
   alt: string
 
   @ApiProperty({
@@ -31,5 +38,17 @@ export class Image {
     example: "png",
     required: true,
   })
+  @IsString()
+  @IsMimeType()
   type: string
+
+  @ApiProperty({
+    type: Boolean,
+    description: "The deleted status of the image",
+    example: false,
+    required: true,
+  })
+  @IsBoolean()
+  @Exclude()
+  deleted: boolean
 }

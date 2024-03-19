@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Query, ValidationPipe } from "@nestjs/common"
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Query,
+  ValidationPipe,
+} from "@nestjs/common"
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -14,6 +25,7 @@ import {
 } from "@nestjs/swagger"
 import { CreateGuideResponseDto } from "./dto/create-guide-response.dto"
 import { CreateGuideDto } from "./dto/create-guide.dto"
+import { GetGuideResponseDto } from "./dto/get-guide-response.dto"
 import { GetGuidesQueryDto } from "./dto/get-guides-query.dto"
 import { GetGuidesResponseDto } from "./dto/get-guides-response.dto"
 import { GuideDto } from "./dto/guide.dto"
@@ -23,19 +35,16 @@ import { GuidesService } from "./guides.service"
 @ApiTags("guides")
 @Controller("guides")
 export class GuidesController {
-  constructor(
-    private readonly logger: Logger,
-    private readonly guidesService: GuidesService,
-  ) {}
+  constructor(private readonly guidesService: GuidesService) {}
 
   @Post()
   @ApiOperation({ summary: "Create a new guide" })
-  @ApiUnauthorizedResponse({
-    description: "Unauthorized",
-  })
   @ApiCreatedResponse({
     description: "The guide has been successfully created.",
-    type: GuideDto,
+    type: CreateGuideResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: "Unauthorized",
   })
   @ApiBadRequestResponse({
     description: "Bad request",
@@ -43,7 +52,7 @@ export class GuidesController {
   @ApiInternalServerErrorResponse({
     description: "Internal server error",
   })
-  @ApiBody({ type: CreateGuideDto })
+  @ApiBody({ type: CreateGuideDto, required: true, description: "The guide to create" })
   async create(@Body() createGuideDto: CreateGuideDto): Promise<CreateGuideResponseDto> {
     try {
       const creationResult = await this.guidesService.create(createGuideDto)
@@ -53,19 +62,36 @@ export class GuidesController {
         errors: null,
       }
     } catch (error) {
-      this.logger.error("Error creating guide", { error })
+      if (error instanceof Error) {
+        return {
+          data: null,
+          errors: [
+            {
+              message: error.message,
+              name: error.name,
+              stack: error.stack,
+            },
+          ],
+        }
+      }
 
       return {
         data: null,
-        errors: [new Error("Error creating guide")],
+        errors: [
+          {
+            message: "Unexpected error creating guide",
+            name: "UnexpectedError",
+            stack: null,
+          },
+        ],
       }
     }
   }
 
   @Get()
   @ApiOperation({ summary: "Get filtered guides" })
-  @ApiQuery({ name: "page", type: Number, required: false, description: "The page number" })
-  @ApiQuery({ name: "pageSize", type: Number, required: false, description: "The page size" })
+  @ApiQuery({ name: "page", type: Number, required: false, example: 1, description: "The page number" })
+  @ApiQuery({ name: "pageSize", type: Number, required: false, example: 10, description: "The page size" })
   @ApiOkResponse({
     description: "The guides have been successfully retrieved.",
     type: GetGuidesResponseDto,
@@ -98,14 +124,26 @@ export class GuidesController {
       if (error instanceof Error) {
         return {
           data: null,
-          errors: [error],
+          errors: [
+            {
+              message: error.message,
+              name: error.name,
+              stack: error.stack,
+            },
+          ],
         }
       }
     }
   }
 
   @Get(":id")
-  @ApiParam({ name: "id", type: String })
+  @ApiParam({
+    name: "id",
+    type: String,
+    required: true,
+    example: "9a55ee15-d3b6-464f-85b8-755d314b33c1",
+    description: "Guide id",
+  })
   @ApiOperation({ summary: "Get a guide by id" })
   @ApiOkResponse({
     type: GuideDto,
@@ -120,8 +158,36 @@ export class GuidesController {
   @ApiInternalServerErrorResponse({
     description: "Internal server error",
   })
-  findOne(@Param("id") id: string) {
-    return this.guidesService.findOne(id)
+  async findOne(@Param("id") id: string): Promise<GetGuideResponseDto> {
+    try {
+      const result = await this.guidesService.findOne(id)
+
+      if (!result) {
+        throw new NotFoundException()
+      }
+
+      return {
+        data: result,
+        errors: null,
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error instanceof NotFoundException) {
+          throw error
+        }
+
+        return {
+          data: null,
+          errors: [
+            {
+              message: error.message,
+              name: error.name,
+              stack: error.stack,
+            },
+          ],
+        }
+      }
+    }
   }
 
   @Patch(":id")

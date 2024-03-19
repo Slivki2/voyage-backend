@@ -1,6 +1,8 @@
 import { CacheModule } from "@nestjs/cache-manager"
 import { Logger, Module, ModuleMetadata } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
+import { CitiesModule } from "../cities/cities.module"
+import { CountriesModule } from "../countries/countries.module"
 import { GuidesModule } from "../guides/guides.module"
 import { ImagesModule } from "../images/images.module"
 import { AppController } from "./app.controller"
@@ -18,7 +20,7 @@ const CONFIG_MODULES: ModuleImports = [
   CacheModule.register(),
 ]
 
-const API_MODULES: ModuleImports = [GuidesModule, ImagesModule, HealthCheckModule]
+const API_MODULES: ModuleImports = [GuidesModule, ImagesModule, CountriesModule, CitiesModule, HealthCheckModule]
 
 @Module({
   imports: [...CONFIG_MODULES, ...API_MODULES],

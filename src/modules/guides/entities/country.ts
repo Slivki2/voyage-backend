@@ -1,11 +1,1 @@
-import { Image } from "./image"
-
-export class Country {
-  id: string
-  name: string
-
-  images: Image[]
-
-  createdAt: Date
-  updatedAt: Date
-}
+export { Country } from "../../countries/entities/country.entity"

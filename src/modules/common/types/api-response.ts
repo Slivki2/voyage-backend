@@ -1,4 +1,6 @@
+import { ApiError } from "./api-error"
+
 export type ApiResponse<TData> = {
   data: TData
-  errors: Error[] | null
+  errors: ApiError[] | null
 }

@@ -62,7 +62,7 @@ $ npm run prisma:generate
 $ npm run prisma:migrate:dev
 ```
 
-## Tips
+## Development
 
 ```bash
 # To kill a process running on a port use the following command
@@ -73,4 +73,9 @@ $ sudo kill -9 PID
 # OR on Windows
 $ netstat -ano | findstr :3000
 $ tskill PID
+```
+
+```bash
+# To generate a new CRUD module, run the following command
+$ nest g res modules/MODULE_NAME
 ```

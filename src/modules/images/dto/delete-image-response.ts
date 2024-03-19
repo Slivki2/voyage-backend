@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { FileDeleteResult } from "../../aws-s3/types"
-import { ApiResponse } from "../../common/types"
+import { ApiError, ApiResponse } from "../../common/types"
 
 export class DeleteImageResponse implements ApiResponse<FileDeleteResult[]> {
   @ApiProperty({
@@ -19,14 +19,16 @@ export class DeleteImageResponse implements ApiResponse<FileDeleteResult[]> {
   data: FileDeleteResult[]
 
   @ApiProperty({
-    type: [Error],
+    type: [ApiError],
     description: "The errors",
     example: [
       {
         message: "Invalid file URL",
+        name: "ValidationError",
+        stack: `Error: File not found\n    at Object.<anonymous> (/app/src/modules/images/images.controller.ts:40:15)`,
       },
     ],
     required: false,
   })
-  errors: Error[] | null
+  errors: ApiError[] | null
 }
