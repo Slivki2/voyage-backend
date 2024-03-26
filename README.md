@@ -6,6 +6,9 @@ The backend for Voyage application.
 
 Voyage is a service that allows users to plan their trips and look for relevant knowledge about cities.
 
+## Documentation
+Usefully documentation can be found in the `docs` folder.
+
 ## Installation
 
 ```bash
@@ -62,7 +65,7 @@ $ npm run prisma:generate
 $ npm run prisma:migrate:dev
 ```
 
-## Development
+## Local Development
 
 ```bash
 # To kill a process running on a port use the following command

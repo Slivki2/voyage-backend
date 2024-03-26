@@ -1,8 +1,10 @@
 version: '3.8'
 
+name: voyage
+
 volumes:
-  voyage_volume:
-    name: voyage_volume
+  pgdata:
+  pgadmin-data:
 
 services:
   postgres:
@@ -17,21 +19,32 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - voyage_volume:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     ports:
       - ${DB_PORT}:${DB_PORT}
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: voyage-pgadmin
+    restart: always
+    ports:
+      - ${PGADMIN_PORT}:80
+    env_file:
+      - .env
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
 
   server:
     build:
       context: .
       dockerfile: Dockerfile
+    image: adadychanka/voyage
     container_name: voyage-server
     restart: always
     env_file:
       - .env
     ports:
       - ${APP_PORT}:${APP_PORT}
-      - "5555:5555"
     depends_on:
       postgres:
         condition: service_healthy

@@ -26,7 +26,7 @@ export class GuidesService {
             create: createGuideDto.primaryImages,
           },
           contentImages: {
-            create: createGuideDto.contentImages,
+            create: createGuideDto?.contentImages,
           },
           countries: {
             connect: createGuideDto.countries.map(countryId => {
