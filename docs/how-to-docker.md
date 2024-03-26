@@ -52,6 +52,11 @@ $ docker system prune
 $ docker system prune -a --volumes
 ```
 
+To check the logs of the container, run the following command:
+```bash
+$ docker logs <CONTAINER_ID>
+```
+
 ---
 
 ## docker-compose

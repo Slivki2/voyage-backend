@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing"
 import { plainToInstance } from "class-transformer"
-import { getGuideMock } from "../../test-utils/mocks/guides"
+import { getGuideDtoMock } from "../../test-utils/mocks/guides"
 import { MockedLogger } from "../../test-utils/providers"
 import { PrismaModule } from "../prisma/prisma.module"
 import { CreateGuideResponseDto } from "./dto/create-guide-response.dto"
@@ -30,7 +30,7 @@ describe("GuidesController", () => {
 
   describe("Create guide", () => {
     it("should create a simple guide", async () => {
-      const guideMock = getGuideMock()
+      const guideMock = getGuideDtoMock()
       const createGuideDto: CreateGuideDto = plainToInstance(CreateGuideDto, guideMock)
       const guideDto: GuideDto = plainToInstance(GuideDto, guideMock)
       const result: CreateGuideResponseDto = {
@@ -56,7 +56,7 @@ describe("GuidesController", () => {
     })
 
     it("should handle guide creation error", async () => {
-      const guideMock = getGuideMock()
+      const guideMock = getGuideDtoMock()
       const createGuideDto: CreateGuideDto = plainToInstance(CreateGuideDto, guideMock)
       const expectedError = new Error("Test error")
       jest.spyOn(guidesService, "create").mockRejectedValueOnce(expectedError)

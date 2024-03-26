@@ -14,9 +14,10 @@ datasource db {
 }
 
 model Guide {
-  id   String @id @default(uuid())
-  name String @unique
-  text String
+  id         String          @id @default(uuid())
+  name       String          @unique
+  text       String
+  categories GuideCategory[]
 
   primaryImages Images[] @relation(name: "GuidePrimaryImages")
   contentImages Images[] @relation(name: "GuideContentImages")
@@ -30,6 +31,18 @@ model Guide {
 
   // authorId String
   // author User @relation(fields: [authorId], references: [id])
+
+  deleted   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model GuideCategory {
+  key      String @id @unique
+  name     String
+  imageUrl String
+
+  guides Guide[]
 
   deleted   Boolean  @default(false)
   updatedAt DateTime @updatedAt

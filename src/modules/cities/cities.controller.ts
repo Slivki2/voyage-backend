@@ -36,6 +36,7 @@ export class CitiesController {
     description: "Page number",
   })
   @ApiOkResponse({
+    type: GetCitiesResponseDto,
     description: "Cities have been successfully received.",
   })
   @ApiBadRequestResponse({
@@ -86,6 +87,7 @@ export class CitiesController {
     description: "City id",
   })
   @ApiOkResponse({
+    type: GetCityResponseDto,
     description: "City has been successfully received.",
   })
   @ApiBadRequestResponse({

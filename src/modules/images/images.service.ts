@@ -15,13 +15,14 @@ export class ImagesService {
       const uploadedFilesResult = await this.awsS3Service.uploadFiles(imagesDto.files)
 
       const imageDtos = uploadedFilesResult.map<ImageDto>(result => {
-        return {
-          // TODO: fill necessary fields
-          // id: result.id,
+        const imageDto: ImageDto = {
+          // TODO: Fill fields from result correctly
+          id: null,
+          type: null,
           url: result.url,
-          // type: result.type,
-          // alt: result.alt,
         }
+
+        return imageDto
       })
 
       return imageDtos

@@ -8,8 +8,8 @@ export type PutObjectCommandOutputExtended = PutObjectCommandOutput & {
 }
 
 export class FileUploadResult {
-  key: string | null
-  url: string | null
+  key: string
+  url: string
   error: Error | null
 }
 
