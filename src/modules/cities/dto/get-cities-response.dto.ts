@@ -1,41 +1,38 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { ApiError, ApiResponse } from "../../common/types"
+import { ApiError, ApiResponse, PageDto } from "../../common/types"
 import { CityDto } from "./city.dto"
 
-export class GetCitiesResponseDto implements ApiResponse<CityDto[]> {
+export class GetCitiesResponseDto implements ApiResponse<PageDto<CityDto>> {
   @ApiProperty({
-    type: [CityDto],
+    type: [PageDto<CityDto>],
     description: "List of cities",
     required: true,
     example: [
       {
-        id: "c7912662-26ea-435c-a1f7-66f52d1440ff",
-        name: "Paris",
-        description: "Paris is the capital city of France",
-        country: {
-          id: "c7912662-26ea-435c-a1f7-66f52d1440ff",
-          name: "France",
-          description: "France is a country located in Western Europe",
-          images: [
-            {
-              url: "https://example.com/image.jpg",
-              type: "jpg",
-              alt: "Eiffel Tower",
-            },
-          ],
-          deleted: false,
-        },
-        images: [
+        items: [
           {
-            url: "https://example.com/image.jpg",
-            type: "jpg",
-            alt: "Eiffel Tower",
+            id: "1",
+            name: "City 1",
+            country: {
+              id: "1",
+              name: "Country 1",
+            },
+            images: [
+              {
+                id: "1",
+                url: "https://example.com/image.jpg",
+              },
+            ],
           },
         ],
+        total: 1,
+        page: 1,
+        pageSize: 10,
+        hasMore: false,
       },
     ],
   })
-  data: CityDto[]
+  data: PageDto<CityDto>
 
   @ApiProperty({
     type: ApiError,

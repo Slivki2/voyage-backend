@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common"
 import { plainToInstance } from "class-transformer"
-import { PaginationQuery } from "../common/types"
+import prisma from "../../test-utils/prisma/client"
+import { PageDto, PaginationQuery } from "../common/types"
 import { getValidPageNumber, getValidPageSize } from "../common/utils/pagination"
 import { PrismaService } from "../prisma/prisma.service"
 import { CityDto } from "./dto/city.dto"
@@ -12,27 +13,38 @@ export class CitiesService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async findAll(query: PaginationQuery): Promise<CityDto[]> {
+  async findAll(query: PaginationQuery): Promise<PageDto<CityDto>> {
     const pageSize = getValidPageSize({ pageSize: query?.pageSize })
-
     const page = getValidPageNumber({ page: query?.page })
 
     try {
-      const results = await this.prismaService.city.findMany({
-        include: {
-          country: true,
-          images: true,
-        },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        where: {
-          deleted: false,
-        },
-      })
+      const [results, total] = await prisma.$transaction([
+        this.prismaService.city.findMany({
+          include: {
+            country: true,
+            images: true,
+          },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          where: {
+            deleted: false,
+          },
+          orderBy: {
+            name: "asc",
+          },
+        }),
+        this.prismaService.city.count({
+          where: {
+            deleted: false,
+          },
+        }),
+      ])
+      const hasMore = total > page * pageSize
 
       const citiesDtos = plainToInstance(CityDto, results)
+      const citiesPage = new PageDto<CityDto>(citiesDtos, citiesDtos.length, page, pageSize, hasMore)
 
-      return citiesDtos
+      return citiesPage
     } catch (error) {
       if (error instanceof Error) {
         this.logger.error(`Error getting cities: ${error.toString()}`)
