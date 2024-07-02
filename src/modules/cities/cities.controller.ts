@@ -55,16 +55,16 @@ export class CitiesController {
     paginationQuery: GetCitiesQueryDto,
   ): Promise<GetCitiesResponseDto> {
     try {
-      const result = await this.citiesService.findAll(paginationQuery)
+      const page = await this.citiesService.findAll(paginationQuery)
 
       return {
-        data: result,
+        data: page,
         errors: null,
       }
     } catch (error) {
       if (error instanceof Error) {
         return {
-          data: [],
+          data: null,
           errors: [
             {
               message: error.message,
