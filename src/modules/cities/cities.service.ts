@@ -42,7 +42,7 @@ export class CitiesService {
       const hasMore = total > page * pageSize
 
       const citiesDtos = plainToInstance(CityDto, results)
-      const citiesPage = new PageDto<CityDto>(citiesDtos, citiesDtos.length, page, pageSize, hasMore)
+      const citiesPage = new PageDto<CityDto>(citiesDtos, total, page, pageSize, hasMore)
 
       return citiesPage
     } catch (error) {
